@@ -1,10 +1,10 @@
 # Star Patrol
 
-A co-op pixel-art action RPG for mobile, for 1–4 players, set in a world where sci-fi and dark fantasy blend. Players start as a blank recruit in the Star Patrol, a guild of fortune hunters, pick one of 6 classes and raid the ruins of a fallen star empire for loot.
+A pixel-art action RPG for mobile with planned 1–4 player co-op, set in a world where sci-fi and dark fantasy blend. Players start as a blank recruit in the Star Patrol, a guild of fortune hunters, pick one of 6 classes and raid the ruins of a fallen star empire for loot.
 
 Built with **Godot 4** (GDScript).
 
-## Status: prototype, step 2
+## Status: prototype, step 3 next
 
 Working so far (placeholder shapes, no art yet):
 
@@ -14,10 +14,10 @@ Working so far (placeholder shapes, no art yet):
 
 ## Running it
 
-1. Install [Godot 4](https://godotengine.org/download) (the standard version, not .NET).
+1. Install [Godot 4.7 or newer](https://godotengine.org/download) (the standard version, not .NET).
 2. Clone or download this repository.
 3. In Godot's Project Manager, click **Import** and choose this folder's `project.godot`.
-4. Press **F5** to play. Drag the joystick in the bottom-left with the mouse, and click enemies to target them.
+4. Press **F5** to play. Drag the joystick in the bottom-left with the mouse, and click an enemy to target it, then walk up to it to auto-attack.
 
 ## Project layout
 
@@ -34,8 +34,8 @@ docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 ## Prototype roadmap
 
 1. ~~Learn the basics~~
-2. **Movement and combat** (joystick, tap-to-target, auto-attack), done
-3. Warrior skills and the Flame Warden's Heat gauge
+2. ~~Movement and combat (joystick, tap-to-target, auto-attack)~~
+3. **Warrior skills and the Flame Warden's Heat gauge** (next)
 4. One Hollow Throne dungeon room
 5. Layered sprites (base body plus one swappable armor piece)
 6. 2-player online co-op
