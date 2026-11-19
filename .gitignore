@@ -1,0 +1,9 @@
+# Godot 4 cache and generated files
+.godot/
+*.import
+export_presets.cfg
+/android/
+
+# OS files
+.DS_Store
+Thumbs.db
