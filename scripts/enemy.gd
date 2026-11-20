@@ -71,11 +71,15 @@ func take_damage(amount: int) -> void:
 
 ## Damage from `source`: white flash, knockback away from the source, and a short hit-stop.
 ## Set `feedback` to false for small repeated damage (like burning) to skip knockback and hit-stop.
-func take_hit(amount: int, source: Node2D = null, feedback: bool = true) -> void:
+## `crit` shows the damage number as a critical hit.
+func take_hit(amount: int, source: Node2D = null, feedback: bool = true,
+		crit: bool = false) -> void:
 	if hp <= 0:
 		return  # Already dying (removal happens at the end of the frame).
 	_aggro = true  # Getting hit always makes it fight back.
 	hp -= amount
+	var kind := CombatFeel.NumberKind.CRIT if crit else CombatFeel.NumberKind.NORMAL
+	CombatFeel.damage_number(global_position + Vector2(0, -bar_offset - 2.0), amount, kind)
 	queue_redraw()
 	_flash.play(flash_duration)
 	if feedback:

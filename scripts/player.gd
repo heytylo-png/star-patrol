@@ -12,6 +12,8 @@ signal died
 @export var attack_range: float = 40.0     ## How close the target must be to hit it.
 @export var attack_damage: int = 10
 @export var attack_cooldown: float = 0.8   ## Seconds between auto-attacks.
+@export_range(0.0, 1.0) var crit_chance: float = 0.15  ## Chance for any hit to be critical.
+@export var crit_multiplier: float = 1.75  ## Critical hits deal this much more damage.
 @export var joystick: TouchJoystick        ## Drag your joystick node here in the Inspector.
 
 @export_group("Hit feedback")
@@ -70,8 +72,16 @@ func _try_auto_attack() -> void:
 	if _attack_timer > 0.0:
 		return  # Still cooling down.
 	_attack_timer = attack_cooldown
-	target.take_hit(attack_damage, self)
+	hit_enemy(target, attack_damage)
 	_on_auto_attack_hit(target)
+
+
+## Hits `enemy` for `base_damage`, rolling for a critical hit. Returns true on a crit.
+func hit_enemy(enemy: Enemy, base_damage: int, feedback: bool = true) -> bool:
+	var crit: bool = randf() < crit_chance
+	var amount: int = roundi(base_damage * crit_multiplier) if crit else base_damage
+	enemy.take_hit(amount, self, feedback, crit)
+	return crit
 
 
 ## Called when an enemy hits the player. `source` (the attacker) sets the knockback direction.
@@ -80,6 +90,8 @@ func take_damage(amount: int, source: Node2D = null) -> void:
 		return
 	hp = maxi(hp - amount, 0)
 	queue_redraw()
+	CombatFeel.damage_number(global_position + Vector2(0, -hp_bar_offset - 2.0), amount,
+			CombatFeel.NumberKind.HURT)
 	_flash.play(flash_duration)
 	if source:
 		_knockback = source.global_position.direction_to(global_position) * knockback_strength

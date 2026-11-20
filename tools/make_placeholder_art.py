@@ -103,6 +103,32 @@ def chest_iron():
     return c
 
 
+# 3x5 pixel digits for floating damage numbers ("#" = pixel).
+DIGITS = [
+    ["###", "#.#", "#.#", "#.#", "###"], [".#.", "##.", ".#.", ".#.", "###"],
+    ["###", "..#", "###", "#..", "###"], ["###", "..#", "###", "..#", "###"],
+    ["#.#", "#.#", "###", "..#", "..#"], ["###", "#..", "###", "..#", "###"],
+    ["###", "#..", "###", "#.#", "###"], ["###", "..#", ".#.", ".#.", ".#."],
+    ["###", "#.#", "###", "#.#", "###"], ["###", "#.#", "###", "..#", "###"],
+]
+
+
+def digits_image():
+    """White digits with a dark outline, one 5x7 cell per digit (0-9). Tinted in game."""
+    img = Image.new("RGBA", (5 * 10, 7), (0, 0, 0, 0))
+    for d, rows in enumerate(DIGITS):
+        filled = {(d * 5 + 1 + x, 1 + y) for y, row in enumerate(rows) for x, c in enumerate(row) if c == "#"}
+        for (x, y) in filled:
+            img.putpixel((x, y), (255, 255, 255, 255))
+        for y in range(7):
+            for x in range(d * 5, d * 5 + 5):
+                if (x, y) in filled:
+                    continue
+                if any((x + dx, y + dy) in filled for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                    img.putpixel((x, y), PALETTE["outline"] + (255,))
+    return img
+
+
 def palette_image():
     img = Image.new("RGBA", (8 * 8, 4 * 8))
     for i, color in enumerate(PALETTE.values()):
@@ -120,6 +146,8 @@ def main():
     chest_cloth().image().save(out / "chest_cloth.png")
     chest_iron().image().save(out / "chest_iron.png")
     palette_image().save(ROOT / "art" / "palette.png")
+    (ROOT / "art" / "ui").mkdir(parents=True, exist_ok=True)
+    digits_image().save(ROOT / "art" / "ui" / "damage_digits.png")
     print("Wrote art to", ROOT / "art")
 
 
