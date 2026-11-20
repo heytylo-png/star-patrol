@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/flame_warden.gd" id="2_warden"]
@@ -14,87 +14,33 @@
 [ext_resource type="Resource" path="res://gear/cloth_tunic.tres" id="sp_cloth"]
 [ext_resource type="Resource" path="res://gear/iron_breastplate.tres" id="sp_iron"]
 [ext_resource type="Script" path="res://scripts/armor_button.gd" id="sp_armor_btn"]
+[ext_resource type="Script" path="res://scripts/skill_pad.gd" id="pad_script"]
+[ext_resource type="Script" path="res://scripts/spawn_button.gd" id="spawn_btn"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/hollow_throne_tiles.tscn" id="room_tiles"]
+[ext_resource type="Texture2D" path="res://art/tiles/textures_16.png" id="tiles_sheet"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 12.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
-size = Vector2(80, 30)
+size = Vector2(96, 32)
 
 [node name="HollowThrone" type="Node2D" node_paths=PackedStringArray("player")]
 script = ExtResource("1_main")
 player = NodePath("Player")
 
-[node name="Floor" type="Polygon2D" parent="."]
-z_index = -10
-color = Color(0.16, 0.13, 0.19, 1)
-polygon = PackedVector2Array(-400, -250, 400, -250, 400, 250, -400, 250)
-
-[node name="CorridorFloor" type="Polygon2D" parent="."]
-z_index = -10
-color = Color(0.16, 0.13, 0.19, 1)
-polygon = PackedVector2Array(-40, -358, 40, -358, 40, -250, -40, -250)
-
-[node name="Walls" type="Node2D" parent="."]
-
-[node name="NorthLeft" type="StaticBody2D" parent="Walls"]
-position = Vector2(-220, -258)
-script = ExtResource("4_wall")
-size = Vector2(360, 16)
-
-[node name="NorthRight" type="StaticBody2D" parent="Walls"]
-position = Vector2(220, -258)
-script = ExtResource("4_wall")
-size = Vector2(360, 16)
-
-[node name="South" type="StaticBody2D" parent="Walls"]
-position = Vector2(0, 258)
-script = ExtResource("4_wall")
-size = Vector2(816, 16)
-
-[node name="West" type="StaticBody2D" parent="Walls"]
-position = Vector2(-408, 0)
-script = ExtResource("4_wall")
-size = Vector2(16, 532)
-
-[node name="East" type="StaticBody2D" parent="Walls"]
-position = Vector2(408, 0)
-script = ExtResource("4_wall")
-size = Vector2(16, 532)
-
-[node name="PillarLeft" type="StaticBody2D" parent="Walls"]
-position = Vector2(-200, -60)
-script = ExtResource("4_wall")
-size = Vector2(40, 40)
-
-[node name="PillarRight" type="StaticBody2D" parent="Walls"]
-position = Vector2(200, -60)
-script = ExtResource("4_wall")
-size = Vector2(40, 40)
-
-[node name="CorridorLeft" type="StaticBody2D" parent="Walls"]
-position = Vector2(-48, -312)
-script = ExtResource("4_wall")
-size = Vector2(16, 92)
-
-[node name="CorridorRight" type="StaticBody2D" parent="Walls"]
-position = Vector2(48, -312)
-script = ExtResource("4_wall")
-size = Vector2(16, 92)
-
-[node name="CorridorEnd" type="StaticBody2D" parent="Walls"]
-position = Vector2(0, -366)
-script = ExtResource("4_wall")
-size = Vector2(112, 16)
+[node name="RoomTiles" parent="." instance=ExtResource("room_tiles")]
 
 [node name="Door" type="StaticBody2D" parent="."]
-position = Vector2(0, -258)
+position = Vector2(0, -264)
 script = ExtResource("4_wall")
-size = Vector2(80, 16)
+size = Vector2(96, 16)
 color = Color(0.6, 0.35, 0.15, 1)
+tile_texture = ExtResource("tiles_sheet")
+tile_region = Rect2(80, 208, 16, 16)
 
 [node name="Exit" type="Area2D" parent="."]
-position = Vector2(0, -330)
+position = Vector2(0, -336)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Exit"]
 shape = SubResource("RectangleShape2D_exit")
@@ -162,40 +108,82 @@ offset_bottom = 48.0
 script = ExtResource("7_heat")
 player = NodePath("../../Player")
 
-[node name="StrikeButton" type="Control" parent="UI" node_paths=PackedStringArray("player")]
+[node name="SpawnButton" type="Control" parent="UI" node_paths=PackedStringArray("player")]
 layout_mode = 3
-anchors_preset = 3
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -260.0
-offset_top = -140.0
-offset_right = -150.0
-offset_bottom = -30.0
+offset_left = -110.0
+offset_top = 125.0
+offset_right = -20.0
+offset_bottom = 215.0
 grow_horizontal = 0
-grow_vertical = 0
-script = ExtResource("8_skill")
+script = ExtResource("spawn_btn")
 player = NodePath("../../Player")
-label = "Strike"
+enemy_scene = ExtResource("5_enemy")
 
-[node name="RingButton" type="Control" parent="UI" node_paths=PackedStringArray("player")]
+[node name="SkillPad" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -140.0
-offset_top = -250.0
-offset_right = -30.0
-offset_bottom = -140.0
+offset_left = -420.0
+offset_top = -420.0
 grow_horizontal = 0
 grow_vertical = 0
+script = ExtResource("pad_script")
+
+[node name="Attack" type="Control" parent="UI/SkillPad" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("8_skill")
-player = NodePath("../../Player")
+player = NodePath("../../../Player")
+skill_index = -1
+label = "Attack"
+ready_color = Color(0.75, 0.2, 0.15, 0.8)
+
+[node name="Cleave" type="Control" parent="UI/SkillPad" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("8_skill")
+player = NodePath("../../../Player")
+skill_index = 0
+label = "Cleave"
+
+[node name="ShieldBash" type="Control" parent="UI/SkillPad" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("8_skill")
+player = NodePath("../../../Player")
 skill_index = 1
-label = "Ring"
+label = "Shield\nBash"
+
+[node name="Charge" type="Control" parent="UI/SkillPad" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("8_skill")
+player = NodePath("../../../Player")
+skill_index = 2
+label = "Charge"
+
+[node name="WarCry" type="Control" parent="UI/SkillPad" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("8_skill")
+player = NodePath("../../../Player")
+skill_index = 3
+label = "War\nCry"
+
+[node name="InfernoVent" type="Control" parent="UI/SkillPad" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("8_skill")
+player = NodePath("../../../Player")
+skill_index = 4
+label = "Inferno\nVent"
+ready_color = Color(0.9, 0.2, 0.1, 0.8)
 
 [node name="Message" type="Label" parent="UI"]
 visible = false

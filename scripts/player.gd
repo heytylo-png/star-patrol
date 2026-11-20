@@ -12,34 +12,51 @@ signal died
 @export var attack_range: float = 40.0     ## How close the target must be to hit it.
 @export var attack_damage: int = 10
 @export var attack_cooldown: float = 0.8   ## Seconds between auto-attacks.
+@export_range(0.0, 1.0) var crit_chance: float = 0.15  ## Chance for any hit to be critical.
+@export var crit_multiplier: float = 1.75  ## Critical hits deal this much more damage.
+## The Attack button targets the nearest enemy within this distance.
+@export var attack_assist_range: float = 140.0
 @export var joystick: TouchJoystick        ## Drag your joystick node here in the Inspector.
 
+@export_group("Hit feedback")
+@export var flash_duration: float = 0.1       ## White flash when hit, in seconds.
+@export var knockback_strength: float = 80.0  ## Push speed when hit (pixels per second).
+@export var knockback_friction: float = 900.0 ## How fast the push slows down.
+
 var target: Enemy = null
+var facing: Vector2 = Vector2.DOWN   # Last direction moved (or toward the target).
 var hp: int
 var is_dead: bool = false
 var _attack_timer: float = 0.0
-var _flash_tween: Tween
+var _knockback: Vector2 = Vector2.ZERO
+var _flash: HitFlash
 
 
 func _ready() -> void:
 	hp = max_hp
 	add_to_group("player")  # Enemies find the player through this group.
+	_flash = HitFlash.new(self)
 
 
 func _physics_process(delta: float) -> void:
-	_move()
+	_move(delta)
 	_attack_timer = maxf(_attack_timer - delta, 0.0)
 	_try_auto_attack()
 
 
-func _move() -> void:
+func _move(delta: float) -> void:
+	if _custom_move(delta):
+		return  # A skill (like Charge) is moving the player.
 	var direction: Vector2 = Vector2.ZERO
 	if joystick and joystick.output != Vector2.ZERO:
 		direction = joystick.output
 	else:
 		# D-pad buttons and keyboard (WASD / arrow keys) both feed these actions.
 		direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	velocity = direction * move_speed
+	if direction != Vector2.ZERO:
+		facing = direction.normalized()
+	velocity = direction * move_speed + _knockback
+	_knockback = _knockback.move_toward(Vector2.ZERO, knockback_friction * delta)
 	move_and_slide()
 
 
@@ -59,30 +76,59 @@ func _try_auto_attack() -> void:
 		return
 	if not has_target_in_range():
 		return  # Too far away: walk closer with the joystick.
+	facing = global_position.direction_to(target.global_position)
 	if _attack_timer > 0.0:
 		return  # Still cooling down.
 	_attack_timer = attack_cooldown
-	target.take_damage(attack_damage)
+	hit_enemy(target, attack_damage)
 	_on_auto_attack_hit(target)
 
 
-func take_damage(amount: int) -> void:
+## Hits `enemy` for `base_damage`, rolling for a critical hit. Returns true on a crit.
+## Crits and `heavy` hits (big skill blows) shake the screen a little.
+func hit_enemy(enemy: Enemy, base_damage: int, feedback: bool = true,
+		heavy: bool = false) -> bool:
+	var crit: bool = randf() < crit_chance
+	var amount: int = roundi(base_damage * crit_multiplier) if crit else base_damage
+	enemy.take_hit(amount, self, feedback, crit)
+	if feedback and (crit or heavy):
+		CombatFeel.shake_heavy()
+	return crit
+
+
+## Called when the player is hurt. `source` (the attacker) sets the knockback direction.
+## `feedback` false (e.g. overheat self-damage) skips the knockback and hit-stop.
+func take_damage(amount: int, source: Node2D = null, feedback: bool = true) -> void:
 	if is_dead:
 		return
 	hp = maxi(hp - amount, 0)
 	queue_redraw()
-	if _flash_tween:
-		_flash_tween.kill()
+	CombatFeel.damage_number(global_position + Vector2(0, -hp_bar_offset - 2.0), amount,
+			CombatFeel.NumberKind.HURT)
+	_flash.play(flash_duration)
+	if feedback:
+		if source:
+			_knockback = source.global_position.direction_to(global_position) * knockback_strength
+		CombatFeel.hit_stop()
 	if hp == 0:
 		is_dead = true
 		velocity = Vector2.ZERO
 		set_physics_process(false)
 		modulate = Color(0.4, 0.4, 0.4)
 		died.emit()
+
+
+## Heals `amount` HP (up to max) and shows a green number.
+func heal(amount: int) -> void:
+	if is_dead or amount <= 0:
 		return
-	modulate = Color(1, 0.4, 0.4)
-	_flash_tween = create_tween()
-	_flash_tween.tween_property(self, "modulate", Color.WHITE, 0.15)
+	var healed: int = mini(amount, max_hp - hp)
+	if healed <= 0:
+		return
+	hp += healed
+	queue_redraw()
+	CombatFeel.damage_number(global_position + Vector2(0, -hp_bar_offset - 2.0), healed,
+			CombatFeel.NumberKind.HEAL)
 
 
 func heal_full() -> void:
@@ -98,7 +144,42 @@ func has_target_in_range() -> bool:
 	return global_position.distance_to(target.global_position) <= attack_range
 
 
+## The Attack button: targets the nearest enemy if needed, then attacks now if ready.
+func basic_attack() -> void:
+	if is_dead:
+		return
+	if not has_target_in_range():
+		var nearest := _nearest_enemy(attack_assist_range)
+		if nearest:
+			set_target(nearest)
+	_try_auto_attack()
+
+
+## How much of the attack cooldown is left, from 1.0 (just attacked) to 0.0 (ready).
+func attack_cooldown_ratio() -> float:
+	return _attack_timer / attack_cooldown if attack_cooldown > 0.0 else 0.0
+
+
+func _nearest_enemy(max_distance: float) -> Enemy:
+	var best: Enemy = null
+	var best_distance: float = max_distance
+	for node in get_tree().get_nodes_in_group("enemies"):
+		var enemy := node as Enemy
+		if enemy == null or enemy.hp <= 0:
+			continue
+		var distance: float = global_position.distance_to(enemy.global_position)
+		if distance <= best_distance:
+			best_distance = distance
+			best = enemy
+	return best
+
+
 # --- Skill hooks. The base player has no skills; specializations override these. ---
+
+## Return true to take over movement this frame (e.g. a dash).
+func _custom_move(_delta: float) -> bool:
+	return false
+
 
 ## Called after each auto-attack lands.
 func _on_auto_attack_hit(_enemy: Enemy) -> void:

@@ -12,6 +12,15 @@ extends StaticBody2D
 	set(value):
 		color = value
 		queue_redraw()
+## Optional: fill the wall with a tile from a sheet instead of the flat color.
+@export var tile_texture: Texture2D:
+	set(value):
+		tile_texture = value
+		queue_redraw()
+@export var tile_region: Rect2 = Rect2(0, 0, 16, 16):   ## Which part of the sheet to repeat.
+	set(value):
+		tile_region = value
+		queue_redraw()
 
 
 func _ready() -> void:
@@ -33,4 +42,18 @@ func _rebuild() -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(-size / 2.0, size), color)
+	var rect := Rect2(-size / 2.0, size)
+	if tile_texture == null or tile_region.size.x <= 0.0 or tile_region.size.y <= 0.0:
+		draw_rect(rect, color)
+		return
+	# Repeat the tile across the wall, cropping the last row/column to fit.
+	var y := rect.position.y
+	while y < rect.end.y:
+		var h: float = minf(tile_region.size.y, rect.end.y - y)
+		var x := rect.position.x
+		while x < rect.end.x:
+			var w: float = minf(tile_region.size.x, rect.end.x - x)
+			draw_texture_rect_region(tile_texture, Rect2(x, y, w, h),
+					Rect2(tile_region.position, Vector2(w, h)))
+			x += tile_region.size.x
+		y += tile_region.size.y
