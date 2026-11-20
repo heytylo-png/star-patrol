@@ -1,4 +1,4 @@
-class_name VirtualJoystick
+class_name TouchJoystick
 extends Control
 ## On-screen joystick for touch screens.
 ## Put this on a Control node inside a CanvasLayer, sized about 240 x 240,

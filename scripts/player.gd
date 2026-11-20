@@ -7,7 +7,7 @@ extends CharacterBody2D
 @export var attack_range: float = 40.0     ## How close the target must be to hit it.
 @export var attack_damage: int = 10
 @export var attack_cooldown: float = 0.8   ## Seconds between auto-attacks.
-@export var joystick: VirtualJoystick      ## Drag your joystick node here in the Inspector.
+@export var joystick: TouchJoystick        ## Drag your joystick node here in the Inspector.
 
 var target: Enemy = null
 var _attack_timer: float = 0.0
