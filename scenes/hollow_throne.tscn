@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/flame_warden.gd" id="2_warden"]
@@ -15,6 +15,7 @@
 [ext_resource type="Resource" path="res://gear/iron_breastplate.tres" id="sp_iron"]
 [ext_resource type="Script" path="res://scripts/armor_button.gd" id="sp_armor_btn"]
 [ext_resource type="Script" path="res://scripts/skill_pad.gd" id="pad_script"]
+[ext_resource type="Script" path="res://scripts/spawn_button.gd" id="spawn_btn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 12.0
@@ -162,6 +163,20 @@ offset_right = 280.0
 offset_bottom = 48.0
 script = ExtResource("7_heat")
 player = NodePath("../../Player")
+
+[node name="SpawnButton" type="Control" parent="UI" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -110.0
+offset_top = 125.0
+offset_right = -20.0
+offset_bottom = 215.0
+grow_horizontal = 0
+script = ExtResource("spawn_btn")
+player = NodePath("../../Player")
+enemy_scene = ExtResource("5_enemy")
 
 [node name="SkillPad" type="Control" parent="UI"]
 layout_mode = 3
