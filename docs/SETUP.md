@@ -65,3 +65,16 @@ texture, and set each one's **Action** property to one of those four names. No e
 | Enemy | Max HP | 50 |
 | Joystick | Radius | 80 |
 | Main | Tap Radius | 32 |
+| Player (Flame Warden) | Max Heat | 100 |
+| Player (Flame Warden) | Heat Per Auto Attack | 10 |
+| Player (Flame Warden) | Heat Decay Per Second / Delay | 5 / 3 s |
+| Player (Flame Warden) | Strike Damage / Heat Gain / Cooldown | 25 / 25 / 4 s |
+| Player (Flame Warden) | Ring Damage / Heat Cost / Radius / Cooldown | 20 / 40 / 70 px / 6 s |
+| StrikeButton, RingButton | Skill Index / Label / Radius | 0 or 1 / text / 50 |
+
+## Step 3: Flame Warden skills
+
+The Player node now uses `flame_warden.gd`, which extends `player.gd`. Future classes follow the same
+pattern: extend `Player` and override `use_skill`, `can_use_skill` and `skill_cooldown_ratio`.
+The UI layer has a **HeatBar** (top-left) and two **SkillButton** nodes (bottom-right); each has a
+**Player** slot pointing at the Player node.

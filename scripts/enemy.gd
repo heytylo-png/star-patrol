@@ -16,6 +16,8 @@ func _ready() -> void:
 
 
 func take_damage(amount: int) -> void:
+	if hp <= 0:
+		return  # Already dying (removal happens at the end of the frame).
 	hp -= amount
 	queue_redraw()
 	_flash()

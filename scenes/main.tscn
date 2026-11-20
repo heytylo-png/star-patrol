@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="Script" path="res://scripts/player.gd" id="2_player"]
 [ext_resource type="Script" path="res://scripts/enemy.gd" id="3_enemy"]
 [ext_resource type="Script" path="res://scripts/virtual_joystick.gd" id="4_joystick"]
+[ext_resource type="Script" path="res://scripts/flame_warden.gd" id="5_warden"]
+[ext_resource type="Script" path="res://scripts/heat_bar.gd" id="6_heat"]
+[ext_resource type="Script" path="res://scripts/skill_button.gd" id="7_skill"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 12.0
@@ -14,7 +16,7 @@ player = NodePath("Player")
 
 [node name="Player" type="CharacterBody2D" parent="." node_paths=PackedStringArray("joystick")]
 motion_mode = 1
-script = ExtResource("2_player")
+script = ExtResource("5_warden")
 joystick = NodePath("../UI/Joystick")
 
 [node name="Body" type="Polygon2D" parent="Player"]
@@ -76,3 +78,48 @@ offset_right = 260.0
 offset_bottom = -20.0
 grow_vertical = 0
 script = ExtResource("4_joystick")
+
+[node name="HeatBar" type="Control" parent="UI" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 280.0
+offset_bottom = 48.0
+script = ExtResource("6_heat")
+player = NodePath("../../Player")
+
+[node name="StrikeButton" type="Control" parent="UI" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -140.0
+offset_right = -150.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("7_skill")
+player = NodePath("../../Player")
+label = "Strike"
+
+[node name="RingButton" type="Control" parent="UI" node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -250.0
+offset_right = -30.0
+offset_bottom = -140.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("7_skill")
+player = NodePath("../../Player")
+skill_index = 1
+label = "Ring"
