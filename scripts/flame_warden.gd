@@ -78,7 +78,7 @@ func skill_cooldown_ratio(index: int) -> float:
 
 func _flame_strike() -> void:
 	_cooldowns[0] = strike_cooldown
-	target.take_damage(strike_damage)
+	target.take_hit(strike_damage, self)
 	_gain_heat(strike_heat_gain)
 
 
@@ -89,7 +89,7 @@ func _ember_ring() -> void:
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var enemy := node as Enemy
 		if enemy and global_position.distance_to(enemy.global_position) <= ring_radius:
-			enemy.take_damage(ring_damage)
+			enemy.take_hit(ring_damage, self)
 	# Expanding fire ring, drawn in _draw().
 	var tween := create_tween()
 	tween.tween_method(_set_ring_effect, 0.0, 1.0, 0.35)

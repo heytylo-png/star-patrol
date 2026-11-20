@@ -11,6 +11,10 @@ config/description="A co-op pixel-art mobile action RPG for 1-4 players."
 run/main_scene="res://scenes/hollow_throne.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 
+[autoload]
+
+CombatFeel="*res://scenes/combat_feel.tscn"
+
 [display]
 
 window/size/viewport_width=1280

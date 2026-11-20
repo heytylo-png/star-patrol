@@ -14,32 +14,40 @@ signal died
 @export var attack_cooldown: float = 0.8   ## Seconds between auto-attacks.
 @export var joystick: TouchJoystick        ## Drag your joystick node here in the Inspector.
 
+@export_group("Hit feedback")
+@export var flash_duration: float = 0.1       ## White flash when hit, in seconds.
+@export var knockback_strength: float = 80.0  ## Push speed when hit (pixels per second).
+@export var knockback_friction: float = 900.0 ## How fast the push slows down.
+
 var target: Enemy = null
 var hp: int
 var is_dead: bool = false
 var _attack_timer: float = 0.0
-var _flash_tween: Tween
+var _knockback: Vector2 = Vector2.ZERO
+var _flash: HitFlash
 
 
 func _ready() -> void:
 	hp = max_hp
 	add_to_group("player")  # Enemies find the player through this group.
+	_flash = HitFlash.new(self)
 
 
 func _physics_process(delta: float) -> void:
-	_move()
+	_move(delta)
 	_attack_timer = maxf(_attack_timer - delta, 0.0)
 	_try_auto_attack()
 
 
-func _move() -> void:
+func _move(delta: float) -> void:
 	var direction: Vector2 = Vector2.ZERO
 	if joystick and joystick.output != Vector2.ZERO:
 		direction = joystick.output
 	else:
 		# D-pad buttons and keyboard (WASD / arrow keys) both feed these actions.
 		direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	velocity = direction * move_speed
+	velocity = direction * move_speed + _knockback
+	_knockback = _knockback.move_toward(Vector2.ZERO, knockback_friction * delta)
 	move_and_slide()
 
 
@@ -62,27 +70,26 @@ func _try_auto_attack() -> void:
 	if _attack_timer > 0.0:
 		return  # Still cooling down.
 	_attack_timer = attack_cooldown
-	target.take_damage(attack_damage)
+	target.take_hit(attack_damage, self)
 	_on_auto_attack_hit(target)
 
 
-func take_damage(amount: int) -> void:
+## Called when an enemy hits the player. `source` (the attacker) sets the knockback direction.
+func take_damage(amount: int, source: Node2D = null) -> void:
 	if is_dead:
 		return
 	hp = maxi(hp - amount, 0)
 	queue_redraw()
-	if _flash_tween:
-		_flash_tween.kill()
+	_flash.play(flash_duration)
+	if source:
+		_knockback = source.global_position.direction_to(global_position) * knockback_strength
+	CombatFeel.hit_stop()
 	if hp == 0:
 		is_dead = true
 		velocity = Vector2.ZERO
 		set_physics_process(false)
 		modulate = Color(0.4, 0.4, 0.4)
 		died.emit()
-		return
-	modulate = Color(1, 0.4, 0.4)
-	_flash_tween = create_tween()
-	_flash_tween.tween_property(self, "modulate", Color.WHITE, 0.15)
 
 
 func heal_full() -> void:

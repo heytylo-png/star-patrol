@@ -12,6 +12,11 @@ signal died
 @export var attack_damage: int = 4
 @export var attack_cooldown: float = 1.5      ## Seconds between hits.
 
+@export_group("Hit feedback")
+@export var flash_duration: float = 0.1        ## White flash when hit, in seconds.
+@export var knockback_strength: float = 140.0  ## Push speed when hit (pixels per second).
+@export var knockback_friction: float = 900.0  ## How fast the push slows down.
+
 @export_group("Look")
 @export var bar_width: float = 32.0           ## HP bar width (bigger for bosses).
 @export var bar_offset: float = 28.0          ## How far above the center the HP bar sits.
@@ -22,15 +27,24 @@ var _targeted: bool = false
 var _aggro: bool = false
 var _attack_timer: float = 0.0
 var _player: Player = null
+var _knockback: Vector2 = Vector2.ZERO
+var _flash: HitFlash
 
 
 func _ready() -> void:
 	hp = max_hp
 	add_to_group("enemies")  # The tap-to-target code looks for this group.
+	_flash = HitFlash.new(self)
 
 
 func _physics_process(delta: float) -> void:
 	_attack_timer = maxf(_attack_timer - delta, 0.0)
+	if _knockback != Vector2.ZERO:
+		# Being pushed back: no chasing or attacking until the push ends.
+		velocity = _knockback
+		move_and_slide()
+		_knockback = _knockback.move_toward(Vector2.ZERO, knockback_friction * delta)
+		return
 	if _player == null or not is_instance_valid(_player):
 		_player = get_tree().get_first_node_in_group("player") as Player
 		if _player == null:
@@ -47,16 +61,27 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 	elif _attack_timer <= 0.0:
 		_attack_timer = attack_cooldown
-		_player.take_damage(attack_damage)
+		_player.take_damage(attack_damage, self)
 
 
+## Damage with no attacker (no knockback).
 func take_damage(amount: int) -> void:
+	take_hit(amount, null)
+
+
+## Damage from `source`: white flash, knockback away from the source, and a short hit-stop.
+## Set `feedback` to false for small repeated damage (like burning) to skip knockback and hit-stop.
+func take_hit(amount: int, source: Node2D = null, feedback: bool = true) -> void:
 	if hp <= 0:
 		return  # Already dying (removal happens at the end of the frame).
 	_aggro = true  # Getting hit always makes it fight back.
 	hp -= amount
 	queue_redraw()
-	_flash()
+	_flash.play(flash_duration)
+	if feedback:
+		if source:
+			_knockback = source.global_position.direction_to(global_position) * knockback_strength
+		CombatFeel.hit_stop()
 	if hp <= 0:
 		died.emit()
 		queue_free()
@@ -65,12 +90,6 @@ func take_damage(amount: int) -> void:
 func set_targeted(on: bool) -> void:
 	_targeted = on
 	queue_redraw()
-
-
-func _flash() -> void:
-	modulate = Color(1, 0.4, 0.4)
-	var tween := create_tween()
-	tween.tween_property(self, "modulate", Color.WHITE, 0.15)
 
 
 func _draw() -> void:
