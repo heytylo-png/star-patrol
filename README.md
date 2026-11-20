@@ -4,6 +4,8 @@ A pixel-art action RPG for mobile with planned 1–4 player co-op, set in a worl
 
 Built with **Godot 4** (GDScript).
 
+![The prototype running: joystick, player (blue) and three enemies (red) with HP bars](docs/screenshot.png)
+
 ## Status: prototype, step 3 next
 
 Working so far (placeholder shapes, no art yet):
@@ -18,6 +20,14 @@ Working so far (placeholder shapes, no art yet):
 2. Clone or download this repository.
 3. In Godot's Project Manager, click **Import** and choose this folder's `project.godot`.
 4. Press **F5** to play. Drag the joystick in the bottom-left with the mouse, and click an enemy to target it, then walk up to it to auto-attack.
+
+### With the Godot editor on Android
+
+1. Install **Godot Editor** from the Play Store.
+2. On GitHub, tap **Code > Download ZIP**.
+3. In Godot's Project Manager, tap **Import**, go up to `/storage/emulated/0`, open **Download** and pick the ZIP. Choose a folder to extract it to.
+   If the Download folder looks empty, allow Godot to manage all files in **Android Settings > Apps > Godot Editor > Permissions**.
+4. Open the project and tap **▶** (top right).
 
 ### Testing on an Android phone
 
