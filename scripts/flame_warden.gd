@@ -165,12 +165,14 @@ func _shield_bash() -> void:
 	hit_enemy(enemy, bash_damage)
 	enemy.stun(bash_stun)
 	_gain_heat(bash_heat)
-	get_tree().create_timer(bash_stun).timeout.connect(_bash_explosion.bind(enemy))
+	# A weak reference, because the enemy may die before the stun ends.
+	get_tree().create_timer(bash_stun).timeout.connect(_bash_explosion.bind(weakref(enemy)))
 
 
-func _bash_explosion(enemy: Enemy) -> void:
-	if not is_instance_valid(enemy) or is_dead:
-		return
+func _bash_explosion(enemy_ref: WeakRef) -> void:
+	var enemy := enemy_ref.get_ref() as Enemy
+	if enemy == null or enemy.hp <= 0 or is_dead:
+		return  # It died during the stun: no explosion.
 	var center: Vector2 = enemy.global_position
 	for other in get_tree().get_nodes_in_group("enemies"):
 		var e := other as Enemy
