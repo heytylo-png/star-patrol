@@ -7,6 +7,7 @@ extends CharacterBody2D
 signal died
 
 @export var max_hp: int = 100
+@export var hp_bar_offset: float = 28.0  ## How far above the origin the HP bar sits.
 @export var move_speed: float = 120.0      ## Pixels per second.
 @export var attack_range: float = 40.0     ## How close the target must be to hit it.
 @export var attack_damage: int = 10
@@ -123,5 +124,5 @@ func _draw() -> void:
 	# HP bar above the player.
 	var bar_width: float = 32.0
 	var fill: float = clampf(float(hp) / float(max_hp), 0.0, 1.0)
-	draw_rect(Rect2(-bar_width / 2.0, -28.0, bar_width, 4.0), Color(0.2, 0.2, 0.2))
-	draw_rect(Rect2(-bar_width / 2.0, -28.0, bar_width * fill, 4.0), Color(0.3, 0.6, 1.0))
+	draw_rect(Rect2(-bar_width / 2.0, -hp_bar_offset, bar_width, 4.0), Color(0.2, 0.2, 0.2))
+	draw_rect(Rect2(-bar_width / 2.0, -hp_bar_offset, bar_width * fill, 4.0), Color(0.3, 0.6, 1.0))

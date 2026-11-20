@@ -1,7 +1,7 @@
 extends Node2D
 ## The test scene's root script.
 ## - Taps on an enemy make it the player's target (Inotia-style).
-## - Keys 1 and 2 use the player's skills on a computer.
+## - Keys 1 and 2 use the player's skills on a computer; key 3 swaps armor (ArmorButton).
 ## - Creates the movement and skill input actions if you haven't set them up yet.
 
 @export var player: Player          ## Drag your Player node here in the Inspector.
@@ -48,6 +48,7 @@ func _ensure_input_actions() -> void:
 		"move_down": [KEY_S, KEY_DOWN],
 		"skill_1": [KEY_1],
 		"skill_2": [KEY_2],
+		"swap_armor": [KEY_3],
 	}
 	for action in keys:
 		if InputMap.has_action(action):

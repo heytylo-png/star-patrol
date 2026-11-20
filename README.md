@@ -6,9 +6,9 @@ Built with **Godot 4** (GDScript).
 
 ![The prototype running: joystick, player (blue) and three enemies (red) with HP bars](docs/screenshot.png)
 
-## Status: prototype, step 5 next
+## Status: prototype, step 5 (layered sprites) ready to test
 
-Working so far (placeholder shapes, no art yet):
+Working so far (placeholder art):
 
 - On-screen joystick movement (WASD / arrow keys also work on a computer)
 - Tap or click an enemy to target it (red ring)
@@ -17,6 +17,7 @@ Working so far (placeholder shapes, no art yet):
   - **Strike**: heavy hit on your target, builds Heat (needs the target in range)
   - **Ring**: burns all enemies around you, costs 40 Heat
 - A Hollow Throne room (the scene that opens when you press play): enemies chase you and hit back, a wave of 4 enemies, then the Throne Guardian boss. Clear both and the door opens; walk through it to win. You heal between waves, and the room restarts if you fall
+- Layered player sprite (32×48 pixel art): a base body with a swappable chest piece. The **Armor** button (top-right, or key 3) cycles Cloth Tunic → Iron Breastplate → none
 
 ## Running it
 
@@ -57,6 +58,13 @@ scripts/wall.gd        Solid wall block, sized in the Inspector (visible in the 
 scripts/room_director.gd  Waves, boss, door, exit, messages and restart
 scripts/virtual_joystick.gd  Multitouch on-screen joystick
 scripts/main.gd        Tap-to-target, default movement keys and skill keys
+scripts/character_sprite.gd  Paper-doll layers: body, legs, chest, helmet, shoulders, weapon, effects
+scripts/armor_piece.gd A gear piece (name, slot, tier, layer image)
+scripts/armor_button.gd  Test button that swaps the chest piece
+gear/                  Gear pieces (.tres): Cloth Tunic, Iron Breastplate
+art/characters/        Placeholder layer images (32×48, lined up at the feet)
+art/palette.png        The shared 32-color palette
+tools/make_placeholder_art.py  Regenerates the placeholder art (Python + Pillow)
 docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 ```
 
@@ -66,7 +74,7 @@ docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 2. ~~Movement and combat (joystick, tap-to-target, auto-attack)~~
 3. ~~Warrior skills and the Flame Warden's Heat gauge~~
 4. ~~One Hollow Throne dungeon room~~
-5. **Layered sprites (base body plus one swappable armor piece)** (next)
+5. **Layered sprites (base body plus one swappable armor piece)** (first version, testing)
 6. 2-player online co-op
 
 ## Glossary
