@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_enemy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boss"]
+radius = 20.0
+
+[node name="ThroneGuardian" type="CharacterBody2D"]
+motion_mode = 1
+script = ExtResource("1_enemy")
+max_hp = 160
+move_speed = 45.0
+aggro_range = 600.0
+attack_range = 44.0
+attack_damage = 8
+attack_cooldown = 1.6
+bar_width = 48.0
+bar_offset = 36.0
+ring_radius = 28.0
+
+[node name="Body" type="Polygon2D" parent="."]
+color = Color(0.55, 0.2, 0.75, 1)
+polygon = PackedVector2Array(-16, -20, 16, -20, 16, 20, -16, 20)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_boss")

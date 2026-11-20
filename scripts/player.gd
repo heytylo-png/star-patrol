@@ -4,6 +4,9 @@ extends CharacterBody2D
 ## and auto-attacks whatever enemy is targeted once it's in range.
 ## Class specializations (like FlameWarden) extend this script and add skills.
 
+signal died
+
+@export var max_hp: int = 100
 @export var move_speed: float = 120.0      ## Pixels per second.
 @export var attack_range: float = 40.0     ## How close the target must be to hit it.
 @export var attack_damage: int = 10
@@ -11,7 +14,15 @@ extends CharacterBody2D
 @export var joystick: TouchJoystick        ## Drag your joystick node here in the Inspector.
 
 var target: Enemy = null
+var hp: int
+var is_dead: bool = false
 var _attack_timer: float = 0.0
+var _flash_tween: Tween
+
+
+func _ready() -> void:
+	hp = max_hp
+	add_to_group("player")  # Enemies find the player through this group.
 
 
 func _physics_process(delta: float) -> void:
@@ -54,6 +65,32 @@ func _try_auto_attack() -> void:
 	_on_auto_attack_hit(target)
 
 
+func take_damage(amount: int) -> void:
+	if is_dead:
+		return
+	hp = maxi(hp - amount, 0)
+	queue_redraw()
+	if _flash_tween:
+		_flash_tween.kill()
+	if hp == 0:
+		is_dead = true
+		velocity = Vector2.ZERO
+		set_physics_process(false)
+		modulate = Color(0.4, 0.4, 0.4)
+		died.emit()
+		return
+	modulate = Color(1, 0.4, 0.4)
+	_flash_tween = create_tween()
+	_flash_tween.tween_property(self, "modulate", Color.WHITE, 0.15)
+
+
+func heal_full() -> void:
+	if is_dead:
+		return
+	hp = max_hp
+	queue_redraw()
+
+
 func has_target_in_range() -> bool:
 	if target == null or not is_instance_valid(target):
 		return false
@@ -80,3 +117,11 @@ func can_use_skill(_index: int) -> bool:
 ## How much of skill `index`'s cooldown is left, from 1.0 (just used) to 0.0 (ready).
 func skill_cooldown_ratio(_index: int) -> float:
 	return 0.0
+
+
+func _draw() -> void:
+	# HP bar above the player.
+	var bar_width: float = 32.0
+	var fill: float = clampf(float(hp) / float(max_hp), 0.0, 1.0)
+	draw_rect(Rect2(-bar_width / 2.0, -28.0, bar_width, 4.0), Color(0.2, 0.2, 0.2))
+	draw_rect(Rect2(-bar_width / 2.0, -28.0, bar_width * fill, 4.0), Color(0.3, 0.6, 1.0))
