@@ -77,10 +77,14 @@ func _try_auto_attack() -> void:
 
 
 ## Hits `enemy` for `base_damage`, rolling for a critical hit. Returns true on a crit.
-func hit_enemy(enemy: Enemy, base_damage: int, feedback: bool = true) -> bool:
+## Crits and `heavy` hits (big skill blows) shake the screen a little.
+func hit_enemy(enemy: Enemy, base_damage: int, feedback: bool = true,
+		heavy: bool = false) -> bool:
 	var crit: bool = randf() < crit_chance
 	var amount: int = roundi(base_damage * crit_multiplier) if crit else base_damage
 	enemy.take_hit(amount, self, feedback, crit)
+	if feedback and (crit or heavy):
+		CombatFeel.shake_heavy()
 	return crit
 
 

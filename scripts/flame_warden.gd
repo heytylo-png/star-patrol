@@ -78,7 +78,7 @@ func skill_cooldown_ratio(index: int) -> float:
 
 func _flame_strike() -> void:
 	_cooldowns[0] = strike_cooldown
-	hit_enemy(target, strike_damage)
+	hit_enemy(target, strike_damage, true, true)  # Heavy blow.
 	_gain_heat(strike_heat_gain)
 
 
@@ -86,6 +86,7 @@ func _ember_ring() -> void:
 	_cooldowns[1] = ring_cooldown
 	_set_heat(heat - ring_heat_cost)
 	_time_since_combat = 0.0
+	CombatFeel.shake_vent()
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var enemy := node as Enemy
 		if enemy and global_position.distance_to(enemy.global_position) <= ring_radius:
