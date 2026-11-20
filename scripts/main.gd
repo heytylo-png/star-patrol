@@ -1,7 +1,7 @@
 extends Node2D
 ## The test scene's root script.
 ## - Taps on an enemy make it the player's target (Inotia-style).
-## - Keys 1 and 2 use the player's skills on a computer; key 3 swaps armor (ArmorButton).
+## - On a computer: Space attacks, keys 1-4 use the skills, V vents Heat, T swaps armor.
 ## - Creates the movement and skill input actions if you haven't set them up yet.
 
 @export var player: Player          ## Drag your Player node here in the Inspector.
@@ -13,10 +13,13 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("skill_1"):
-		player.use_skill(0)
-	elif event.is_action_pressed("skill_2"):
-		player.use_skill(1)
+	for i in 4:
+		if event.is_action_pressed("skill_%d" % (i + 1)):
+			player.use_skill(i)
+	if event.is_action_pressed("attack"):
+		player.basic_attack()
+	elif event.is_action_pressed("vent"):
+		player.use_skill(4)
 	# Joystick touches are already marked handled, so they never reach here.
 	if event is InputEventScreenTouch and event.pressed:
 		var world_pos: Vector2 = get_viewport().get_canvas_transform().affine_inverse() * event.position
@@ -48,7 +51,11 @@ func _ensure_input_actions() -> void:
 		"move_down": [KEY_S, KEY_DOWN],
 		"skill_1": [KEY_1],
 		"skill_2": [KEY_2],
-		"swap_armor": [KEY_3],
+		"skill_3": [KEY_3],
+		"skill_4": [KEY_4],
+		"attack": [KEY_SPACE],
+		"vent": [KEY_V],
+		"swap_armor": [KEY_T],
 	}
 	for action in keys:
 		if InputMap.has_action(action):

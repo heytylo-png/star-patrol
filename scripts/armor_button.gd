@@ -1,7 +1,7 @@
 class_name ArmorButton
 extends Control
 ## Test button that swaps one gear slot through a list of pieces (and "nothing").
-## Tap it, or press 3 on a computer. Put it in the UI CanvasLayer, about 110 x 110.
+## Tap it, or press T on a computer. Put it in the UI CanvasLayer, about 110 x 110.
 
 @export var character: CharacterSprite   ## The player's CharacterSprite node.
 @export var pieces: Array = []           ## ArmorPiece resources to cycle through.
