@@ -7,3 +7,6 @@ export_presets.cfg
 # OS files
 .DS_Store
 Thumbs.db
+
+# Godot 4.4+ resource IDs: regenerated per machine (kept out so git pull on the phone never conflicts)
+*.uid
