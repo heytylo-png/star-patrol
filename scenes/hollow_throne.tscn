@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/flame_warden.gd" id="2_warden"]
@@ -9,6 +9,11 @@
 [ext_resource type="Script" path="res://scripts/heat_bar.gd" id="7_heat"]
 [ext_resource type="Script" path="res://scripts/skill_button.gd" id="8_skill"]
 [ext_resource type="Script" path="res://scripts/room_director.gd" id="9_director"]
+[ext_resource type="Script" path="res://scripts/character_sprite.gd" id="sp_char"]
+[ext_resource type="Texture2D" path="res://art/characters/body_base.png" id="sp_body"]
+[ext_resource type="Resource" path="res://gear/cloth_tunic.tres" id="sp_cloth"]
+[ext_resource type="Resource" path="res://gear/iron_breastplate.tres" id="sp_iron"]
+[ext_resource type="Script" path="res://scripts/armor_button.gd" id="sp_armor_btn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 12.0
@@ -98,11 +103,13 @@ shape = SubResource("RectangleShape2D_exit")
 position = Vector2(0, 200)
 motion_mode = 1
 script = ExtResource("2_warden")
+hp_bar_offset = 56.0
 joystick = NodePath("../UI/Joystick")
 
-[node name="Body" type="Polygon2D" parent="Player"]
-color = Color(0.3, 0.6, 1, 1)
-polygon = PackedVector2Array(-10, -12, 10, -12, 10, 12, -10, 12)
+[node name="Sprite" type="Node2D" parent="Player"]
+script = ExtResource("sp_char")
+body_texture = ExtResource("sp_body")
+starting_gear = [ExtResource("sp_cloth")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource("CircleShape2D_player")
@@ -203,6 +210,20 @@ offset_bottom = 140.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
+
+[node name="ArmorButton" type="Control" parent="UI" node_paths=PackedStringArray("character")]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -110.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 110.0
+grow_horizontal = 0
+script = ExtResource("sp_armor_btn")
+character = NodePath("../../Player/Sprite")
+pieces = [ExtResource("sp_cloth"), ExtResource("sp_iron")]
 
 [node name="RoomDirector" type="Node" parent="." node_paths=PackedStringArray("player", "waves_root", "door", "exit_area", "message")]
 script = ExtResource("9_director")

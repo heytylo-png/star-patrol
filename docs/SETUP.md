@@ -94,3 +94,20 @@ The UI layer has a **HeatBar** (top-left) and two **SkillButton** nodes (bottom-
   is announced as the boss.
 - **RoomDirector**: links the Player, the Waves node, the **Door** (removed when every wave is cleared),
   the **Exit** area beyond it, and the **Message** label.
+
+## Step 5: Layered sprites
+
+The player's look is a **CharacterSprite** node (`Player/Sprite`) that stacks one image per layer, bottom
+to top: Body, Legs, Chest, Helmet, Shoulders, Weapon, Effects (the order from the design doc).
+
+**Art rules** (from the design doc): every layer is a 32×48 PNG on the same canvas, lined up at the feet
+(the soles sit on row 45), with a dark outline and colors from `art/palette.png`.
+
+- **Change the starting gear:** select `Player/Sprite` and edit **Starting Gear**.
+- **Add a gear piece:** in FileSystem, right-click `gear/` > **New > Resource > ArmorPiece**. Set its
+  name, slot, tier (1 = Cloth … 9 = Legendary) and texture. Add it to the ArmorButton's **Pieces** list to
+  try it in game.
+- **Replace the placeholder art:** overwrite the PNGs in `art/characters/` with your own (same size and
+  alignment). No code changes needed. To regenerate the placeholders instead, run
+  `python3 tools/make_placeholder_art.py` (needs Pillow).
+
