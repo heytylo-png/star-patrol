@@ -78,6 +78,9 @@ scripts/armor_button.gd  Test button that swaps the chest piece
 gear/                  Gear pieces (.tres): Cloth Tunic, Iron Breastplate
 art/characters/        Placeholder layer images (32×48, lined up at the feet)
 art/palette.png        The shared 32-color palette
+art/tiles/             Tile texture sheets (16×16 tiles)
+art/items/food.png     64 food item icons (16×16)
+art/README.md          What each art sheet holds
 tools/make_placeholder_art.py  Regenerates the placeholder art (Python + Pillow)
 docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 ```
