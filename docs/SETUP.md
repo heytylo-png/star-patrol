@@ -69,19 +69,28 @@ texture, and set each one's **Action** property to one of those four names. No e
 | RoomDirector | Heal Between Waves | on |
 | Joystick | Radius | 80 |
 | Main | Tap Radius | 32 |
-| Player (Flame Warden) | Max Heat | 100 |
-| Player (Flame Warden) | Heat Per Auto Attack | 10 |
+| Player | Crit Chance / Crit Multiplier | 15% / 1.75× |
+| Player, Enemy | Flash Duration / Knockback Strength | 0.1 s / 80 (player), 140 (enemy) |
+| Player (Flame Warden) | Max Heat / Heat Per Auto Attack | 100 / 0 (skills build Heat) |
 | Player (Flame Warden) | Heat Decay Per Second / Delay | 5 / 3 s |
-| Player (Flame Warden) | Strike Damage / Heat Gain / Cooldown | 25 / 25 / 4 s |
-| Player (Flame Warden) | Ring Damage / Heat Cost / Radius / Cooldown | 20 / 40 / 70 px / 6 s |
-| StrikeButton, RingButton | Skill Index / Label / Radius | 0 or 1 / text / 50 |
+| Player (Flame Warden) | Overheat: Damage / Duration / Reset Heat | 5% max HP per s / 3 s / 60 |
+| Player (Flame Warden) | Cleave: Damage / Range / Arc / Heat / Cooldown | 14 / 52 px / 120° / 10 / 3 s |
+| Player (Flame Warden) | Shield Bash: Damage / Stun / Explosion / Heat / Cooldown | 10 / 1.2 s / 20 / 15 / 8 s |
+| Player (Flame Warden) | Charge: Range / Speed / Damage / Heat / Cooldown | 180 px / 520 / 16 / 15 / 10 s |
+| Player (Flame Warden) | War Cry: Radius / Burn / Heat / Cooldown | 140 px / 3 × 6 ticks / 20 / 15 s |
+| Player (Flame Warden) | Inferno Vent: Min Heat / Damage / Radius / Cooldown | 50 / 10 + 0.5 per Heat / 90 px / 60 s |
+| SkillPad | Attack / Skill / Ultimate Radius, Arc Distance and Angles | 66 / 40 / 36, 150 px, 175°–275° |
+| HeatBar | Tick Heat / Pulse Start / Pulse Speeds | 70 / 85 / 2–7 per s |
+| SpawnButton | Min / Max Distance / Max Alive | 110 / 170 px / 20 |
+| CombatFeel (`scenes/combat_feel.tscn`) | Hit-stop / Shake (heavy, vent) / Number colors and sizes | 0.05 s / 2.5 and 5 px / … |
 
 ## Step 3: Flame Warden skills
 
 The Player node now uses `flame_warden.gd`, which extends `player.gd`. Future classes follow the same
 pattern: extend `Player` and override `use_skill`, `can_use_skill` and `skill_cooldown_ratio`.
-The UI layer has a **HeatBar** (top-left) and two **SkillButton** nodes (bottom-right); each has a
-**Player** slot pointing at the Player node.
+The UI layer has a **HeatBar** (top-left) and a **SkillPad** (bottom-right) holding the **SkillButton**
+nodes: Skill Index -1 is the Attack button, 0–3 go on the arc, 4 is Inferno Vent. Each button has a
+**Player** slot pointing at the Player node; the pad sets their positions and sizes.
 
 ## Step 4: Hollow Throne room
 
@@ -110,4 +119,17 @@ to top: Body, Legs, Chest, Helmet, Shoulders, Weapon, Effects (the order from th
 - **Replace the placeholder art:** overwrite the PNGs in `art/characters/` with your own (same size and
   alignment). No code changes needed. To regenerate the placeholders instead, run
   `python3 tools/make_placeholder_art.py` (needs Pillow).
+
+## Combat feel
+
+- **Hit feedback:** every hit flashes the character white (`HitFlash` + `shaders/hit_flash.gdshader`),
+  knocks it back from the attacker and freezes the game for 0.05 s (hit-stop).
+- **Damage numbers:** pixel digits from `art/ui/damage_digits.png`: white for normal hits, gold and bigger
+  for crits, red for damage you take, orange for burning.
+- **Screen shake:** only on crits, heavy skill hits (Shield Bash explosion, Charge) and Inferno Vent.
+- Hit-stop, numbers and shake live in the **CombatFeel** autoload: open `scenes/combat_feel.tscn` to tune
+  them. Per-character numbers are in each node's **Hit feedback** group.
+
+**Computer keys:** WASD/arrows move, Space attacks, 1–4 use the skills, V vents Heat, T swaps armor,
+E spawns a test enemy.
 

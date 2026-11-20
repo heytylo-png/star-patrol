@@ -13,11 +13,20 @@ Working so far (placeholder art):
 - On-screen joystick movement (WASD / arrow keys also work on a computer)
 - Tap or click an enemy to target it (red ring)
 - Auto-attack when the target is in range; enemies flash, lose HP and disappear
-- Flame Warden Heat gauge (top-left) and two skill buttons (bottom-right, or keys 1 and 2):
-  - **Strike**: heavy hit on your target, builds Heat (needs the target in range)
-  - **Ring**: burns all enemies around you, costs 40 Heat
+- Flame Warden skill pad (bottom-right): a big **Attack** button with the Warrior's four skills on an
+  arc around it, each with a cooldown sweep (keys: Space, 1–4, V):
+  - **Cleave**: fire arc in front of you, builds Heat
+  - **Shield Bash**: stuns your target; when the stun ends it explodes in fire
+  - **Charge**: dash to your target and hit it
+  - **War Cry**: taunts nearby enemies and sets them burning
+  - **Inferno Vent** (needs 50+ Heat): dumps all Heat as an explosion that grows with it
+- Heat gauge (top-left): skills build it; a tick marks 70, it pulses red near 100, and at 100 you
+  overheat (lose 5% max HP per second for 3 s)
+- Combat feel: white hit flash, knockback, a short hit-stop, floating pixel damage numbers (gold for
+  crits, red when you're hurt, orange for burning), and a small screen shake on heavy hits and vents
+- Test tools (top-right): **Spawn** adds an enemy that comes straight for you (key E)
 - A Hollow Throne room (the scene that opens when you press play): enemies chase you and hit back, a wave of 4 enemies, then the Throne Guardian boss. Clear both and the door opens; walk through it to win. You heal between waves, and the room restarts if you fall
-- Layered player sprite (32×48 pixel art): a base body with a swappable chest piece. The **Armor** button (top-right, or key 3) cycles Cloth Tunic → Iron Breastplate → none
+- Layered player sprite (32×48 pixel art): a base body with a swappable chest piece. The **Armor** button (top-right, or key T) cycles Cloth Tunic → Iron Breastplate → none
 
 ## Running it
 
@@ -50,14 +59,19 @@ scenes/enemy.tscn      Basic enemy
 scenes/boss.tscn       Throne Guardian boss (same script, bigger numbers)
 scenes/main.tscn       Sandbox: player and 3 enemies in an open space
 scripts/player.gd      Movement, HP and auto-attack (base for all classes)
-scripts/flame_warden.gd  Flame Warden: Heat gauge, Flame Strike, Ember Ring
-scripts/heat_bar.gd    Heat gauge display
-scripts/skill_button.gd  Round on-screen skill button with cooldown sweep
-scripts/enemy.gd       HP, chasing and attacking, damage flash, HP bar and target ring
+scripts/flame_warden.gd  Flame Warden: Heat, overheat, Cleave, Shield Bash, Charge, War Cry, Inferno Vent
+scripts/heat_bar.gd    Heat gauge display (tick at 70, red pulse near 100)
+scripts/skill_button.gd  Round on-screen skill/attack button with cooldown sweep
+scripts/skill_pad.gd   Lays out the Attack button and skill arc in the corner
+scripts/spawn_button.gd  Test tool: spawns an enemy near the player
+scripts/combat_feel.gd Hit-stop, damage numbers and screen shake (autoload, tuned in scenes/combat_feel.tscn)
+scripts/hit_flash.gd   White hit flash (uses shaders/hit_flash.gdshader)
+scripts/damage_number.gd  Floating pixel damage number
+scripts/enemy.gd       HP, chasing and attacking, knockback, stun, burn, HP bar and target ring
 scripts/wall.gd        Solid wall block, sized in the Inspector (visible in the editor)
 scripts/room_director.gd  Waves, boss, door, exit, messages and restart
 scripts/virtual_joystick.gd  Multitouch on-screen joystick
-scripts/main.gd        Tap-to-target, default movement keys and skill keys
+scripts/main.gd        Tap-to-target and computer keys (move, attack, skills, vent, armor, spawn)
 scripts/character_sprite.gd  Paper-doll layers: body, legs, chest, helmet, shoulders, weapon, effects
 scripts/armor_piece.gd A gear piece (name, slot, tier, layer image)
 scripts/armor_button.gd  Test button that swaps the chest piece
@@ -80,7 +94,7 @@ docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 ## Glossary
 
 - **Flame Warden**: a Warrior specialization built around heat and fire.
-- **Heat gauge**: the Flame Warden's class resource (0–100). Attacks build it, it cools after 3 seconds out of combat, and Ember Ring spends it.
+- **Heat gauge**: the Flame Warden's class resource (0–100). Skills build it, it cools after 3 seconds out of combat, 100 overheats you, and Inferno Vent spends it.
 - **Hollow Throne**: a ruined dungeon from the fallen star empire, used for the first test room.
 - **Throne Guardian**: the boss at the end of the first Hollow Throne room.
 
