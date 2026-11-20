@@ -6,7 +6,7 @@ Built with **Godot 4** (GDScript).
 
 ![The prototype running: joystick, player (blue) and three enemies (red) with HP bars](docs/screenshot.png)
 
-## Status: prototype, step 3 (Flame Warden) ready to test
+## Status: prototype, step 4 next
 
 Working so far (placeholder shapes, no art yet):
 
@@ -58,8 +58,8 @@ docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 
 1. ~~Learn the basics~~
 2. ~~Movement and combat (joystick, tap-to-target, auto-attack)~~
-3. **Warrior skills and the Flame Warden's Heat gauge** (first version, testing)
-4. One Hollow Throne dungeon room
+3. ~~Warrior skills and the Flame Warden's Heat gauge~~
+4. **One Hollow Throne dungeon room** (next)
 5. Layered sprites (base body plus one swappable armor piece)
 6. 2-player online co-op
 
