@@ -133,3 +133,28 @@ to top: Body, Legs, Chest, Helmet, Shoulders, Weapon, Effects (the order from th
 **Computer keys:** WASD/arrows move, Space attacks, 1–4 use the skills, V vents Heat, T swaps armor,
 E spawns a test enemy.
 
+## Tiles
+
+The Hollow Throne's floor and walls are two **TileMapLayer** nodes in
+`scenes/rooms/hollow_throne_tiles.tscn`, using `tiles/textures_16_tileset.tres` (every 16×16 tile of
+`art/tiles/textures_16.png`). The brick and stone tiles in row 4 of the sheet have collision, so painting
+them makes solid walls.
+
+- **Edit the room:** open `hollow_throne_tiles.tscn`, select **Floor** or **Walls**, and paint with the
+  TileMap panel at the bottom of the editor. The room grid is 16 px; the interior runs from -400 to 400
+  (x) and -256 to 256 (y).
+- **Rebuild from scratch:** `godot --headless --path . --script res://tools/build_hollow_throne_tiles.gd`
+  regenerates the TileSet and the room. This overwrites hand-painted changes.
+- The **Door** is still a separate wall node (so the room can open it); it repeats a wood plank tile.
+
+## Food drops
+
+Enemies drop a random food from `art/items/food.png` when they die. Walk over it to heal. At full HP it
+stays on the floor, and it blinks out after 20 seconds.
+
+| Node | Setting | Default |
+| --- | --- | --- |
+| Enemy | Drop Chance / Drop Heal | 30% / 15 HP |
+| Boss (`boss.tscn`) | Drop Chance / Drop Heal | 100% / 40 HP |
+| FoodPickup | Pickup Radius / Lifetime / Blink Time | 16 px / 20 s / 3 s |
+

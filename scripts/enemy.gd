@@ -17,6 +17,10 @@ signal died
 @export var knockback_strength: float = 140.0  ## Push speed when hit (pixels per second).
 @export var knockback_friction: float = 900.0  ## How fast the push slows down.
 
+@export_group("Drops")
+@export_range(0.0, 1.0) var drop_chance: float = 0.3   ## Chance to drop food when it dies.
+@export var drop_heal: int = 15                        ## HP the dropped food heals.
+
 @export_group("Look")
 @export var bar_width: float = 32.0           ## HP bar width (bigger for bosses).
 @export var bar_offset: float = 28.0          ## How far above the center the HP bar sits.
@@ -101,8 +105,18 @@ func take_hit(amount: int, source: Node2D = null, feedback: bool = true,
 			_knockback = source.global_position.direction_to(global_position) * knockback_strength
 		CombatFeel.hit_stop()
 	if hp <= 0:
+		_drop_loot()
 		died.emit()
 		queue_free()
+
+
+func _drop_loot() -> void:
+	if randf() >= drop_chance or get_parent() == null:
+		return
+	var food := FoodPickup.new()
+	food.heal_amount = drop_heal
+	food.position = position
+	get_parent().add_child.call_deferred(food)   # Deferred: we may be mid-physics.
 
 
 ## Can't move or attack for `seconds`.

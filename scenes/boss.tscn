@@ -17,6 +17,8 @@ attack_cooldown = 1.6
 bar_width = 48.0
 bar_offset = 36.0
 ring_radius = 28.0
+drop_chance = 1.0
+drop_heal = 40
 
 [node name="Body" type="Polygon2D" parent="."]
 color = Color(0.55, 0.2, 0.75, 1)

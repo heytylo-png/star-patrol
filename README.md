@@ -25,6 +25,8 @@ Working so far (placeholder art):
 - Combat feel: white hit flash, knockback, a short hit-stop, floating pixel damage numbers (gold for
   crits, red when you're hurt, orange for burning), and a small screen shake on heavy hits and vents
 - Test tools (top-right): **Spawn** adds an enemy that comes straight for you (key E)
+- Tiled Hollow Throne room (slate cobble floor, brick walls, stone pillars) built from a Godot TileSet
+- Food drops: enemies sometimes drop food (the boss always does); walk over it to heal (green number)
 - A Hollow Throne room (the scene that opens when you press play): enemies chase you and hit back, a wave of 4 enemies, then the Throne Guardian boss. Clear both and the door opens; walk through it to win. You heal between waves, and the room restarts if you fall
 - Layered player sprite (32×48 pixel art): a base body with a swappable chest piece. The **Armor** button (top-right, or key T) cycles Cloth Tunic → Iron Breastplate → none
 
@@ -64,6 +66,10 @@ scripts/heat_bar.gd    Heat gauge display (tick at 70, red pulse near 100)
 scripts/skill_button.gd  Round on-screen skill/attack button with cooldown sweep
 scripts/skill_pad.gd   Lays out the Attack button and skill arc in the corner
 scripts/spawn_button.gd  Test tool: spawns an enemy near the player
+scripts/food_pickup.gd Food on the floor that heals the player
+tiles/textures_16_tileset.tres  TileSet made from art/tiles/textures_16.png (wall tiles are solid)
+scenes/rooms/hollow_throne_tiles.tscn  The room's Floor and Walls tile layers (paint them in the editor)
+tools/build_hollow_throne_tiles.gd  Rebuilds the TileSet and the tile room (overwrites hand edits)
 scripts/combat_feel.gd Hit-stop, damage numbers and screen shake (autoload, tuned in scenes/combat_feel.tscn)
 scripts/hit_flash.gd   White hit flash (uses shaders/hit_flash.gdshader)
 scripts/damage_number.gd  Floating pixel damage number

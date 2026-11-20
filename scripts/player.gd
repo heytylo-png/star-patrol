@@ -118,6 +118,19 @@ func take_damage(amount: int, source: Node2D = null, feedback: bool = true) -> v
 		died.emit()
 
 
+## Heals `amount` HP (up to max) and shows a green number.
+func heal(amount: int) -> void:
+	if is_dead or amount <= 0:
+		return
+	var healed: int = mini(amount, max_hp - hp)
+	if healed <= 0:
+		return
+	hp += healed
+	queue_redraw()
+	CombatFeel.damage_number(global_position + Vector2(0, -hp_bar_offset - 2.0), healed,
+			CombatFeel.NumberKind.HEAL)
+
+
 func heal_full() -> void:
 	if is_dead:
 		return

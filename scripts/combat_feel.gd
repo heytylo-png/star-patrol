@@ -2,7 +2,7 @@ extends Node
 ## Global combat polish, available everywhere as `CombatFeel` (an autoload).
 ## Open scenes/combat_feel.tscn to tune the numbers in the Inspector.
 
-enum NumberKind { NORMAL, CRIT, HURT, BURN }
+enum NumberKind { NORMAL, CRIT, HURT, BURN, HEAL }
 
 @export_group("Hit-stop")
 @export var hit_stop_duration: float = 0.05     ## Seconds the game freezes on each hit.
@@ -13,6 +13,7 @@ enum NumberKind { NORMAL, CRIT, HURT, BURN }
 @export var crit_color: Color = Color(1.0, 0.82, 0.25)     ## Critical hits.
 @export var hurt_color: Color = Color(1.0, 0.3, 0.3)       ## Damage the player takes.
 @export var burn_color: Color = Color(1.0, 0.55, 0.15)     ## Burning damage over time.
+@export var heal_color: Color = Color(0.4, 1.0, 0.45)      ## Healing.
 @export var number_scale: float = 2.0                      ## World pixels per digit pixel.
 @export var crit_number_scale: float = 3.0
 @export var crit_pop: float = 1.6                          ## Crits start this much bigger.
@@ -74,6 +75,9 @@ func damage_number(world_position: Vector2, amount: int,
 			number.pixel_scale = number_scale
 		NumberKind.BURN:
 			number.color = burn_color
+			number.pixel_scale = number_scale
+		NumberKind.HEAL:
+			number.color = heal_color
 			number.pixel_scale = number_scale
 		_:
 			number.color = number_color
