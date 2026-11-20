@@ -6,13 +6,16 @@ Built with **Godot 4** (GDScript).
 
 ![The prototype running: joystick, player (blue) and three enemies (red) with HP bars](docs/screenshot.png)
 
-## Status: prototype, step 3 next
+## Status: prototype, step 3 (Flame Warden) ready to test
 
 Working so far (placeholder shapes, no art yet):
 
 - On-screen joystick movement (WASD / arrow keys also work on a computer)
 - Tap or click an enemy to target it (red ring)
 - Auto-attack when the target is in range; enemies flash, lose HP and disappear
+- Flame Warden Heat gauge (top-left) and two skill buttons (bottom-right, or keys 1 and 2):
+  - **Strike**: heavy hit on your target, builds Heat (needs the target in range)
+  - **Ring**: burns all enemies around you, costs 40 Heat
 
 ## Running it
 
@@ -41,10 +44,13 @@ Working so far (placeholder shapes, no art yet):
 ```
 project.godot          Project settings (mobile renderer, touch emulation, pixel-art filtering)
 scenes/main.tscn       Test scene: player, 3 enemies, joystick
-scripts/player.gd      Movement and auto-attack
+scripts/player.gd      Movement and auto-attack (base for all classes)
+scripts/flame_warden.gd  Flame Warden: Heat gauge, Flame Strike, Ember Ring
+scripts/heat_bar.gd    Heat gauge display
+scripts/skill_button.gd  Round on-screen skill button with cooldown sweep
 scripts/enemy.gd       HP, damage flash, HP bar and target ring
 scripts/virtual_joystick.gd  Multitouch on-screen joystick
-scripts/main.gd        Tap-to-target and default movement keys
+scripts/main.gd        Tap-to-target, default movement keys and skill keys
 docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 ```
 
@@ -52,7 +58,7 @@ docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 
 1. ~~Learn the basics~~
 2. ~~Movement and combat (joystick, tap-to-target, auto-attack)~~
-3. **Warrior skills and the Flame Warden's Heat gauge** (next)
+3. **Warrior skills and the Flame Warden's Heat gauge** (first version, testing)
 4. One Hollow Throne dungeon room
 5. Layered sprites (base body plus one swappable armor piece)
 6. 2-player online co-op
@@ -60,7 +66,7 @@ docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 ## Glossary
 
 - **Flame Warden**: a Warrior specialization built around heat and fire.
-- **Heat gauge**: the Flame Warden's class resource, which builds up in combat and powers their skills.
+- **Heat gauge**: the Flame Warden's class resource (0–100). Attacks build it, it cools after 3 seconds out of combat, and Ember Ring spends it.
 - **Hollow Throne**: a ruined dungeon from the fallen star empire, used for the first test room.
 
 ## License

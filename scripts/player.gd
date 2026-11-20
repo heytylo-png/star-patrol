@@ -2,6 +2,7 @@ class_name Player
 extends CharacterBody2D
 ## The player character: moves with the joystick (or D-pad / keyboard),
 ## and auto-attacks whatever enemy is targeted once it's in range.
+## Class specializations (like FlameWarden) extend this script and add skills.
 
 @export var move_speed: float = 120.0      ## Pixels per second.
 @export var attack_range: float = 40.0     ## How close the target must be to hit it.
@@ -44,9 +45,38 @@ func _try_auto_attack() -> void:
 	if not is_instance_valid(target):
 		target = null  # The enemy died and was removed.
 		return
-	if global_position.distance_to(target.global_position) > attack_range:
+	if not has_target_in_range():
 		return  # Too far away: walk closer with the joystick.
 	if _attack_timer > 0.0:
 		return  # Still cooling down.
 	_attack_timer = attack_cooldown
 	target.take_damage(attack_damage)
+	_on_auto_attack_hit(target)
+
+
+func has_target_in_range() -> bool:
+	if target == null or not is_instance_valid(target):
+		return false
+	return global_position.distance_to(target.global_position) <= attack_range
+
+
+# --- Skill hooks. The base player has no skills; specializations override these. ---
+
+## Called after each auto-attack lands.
+func _on_auto_attack_hit(_enemy: Enemy) -> void:
+	pass
+
+
+## Try to use skill number `index` (0 = first skill button).
+func use_skill(_index: int) -> void:
+	pass
+
+
+## Whether skill `index` can be used right now (off cooldown, enough resource, in range).
+func can_use_skill(_index: int) -> bool:
+	return false
+
+
+## How much of skill `index`'s cooldown is left, from 1.0 (just used) to 0.0 (ready).
+func skill_cooldown_ratio(_index: int) -> float:
+	return 0.0
