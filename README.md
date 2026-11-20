@@ -6,7 +6,7 @@ Built with **Godot 4** (GDScript).
 
 ![The prototype running: joystick, player (blue) and three enemies (red) with HP bars](docs/screenshot.png)
 
-## Status: prototype, step 4 next
+## Status: prototype, step 4 (Hollow Throne room) ready to test
 
 Working so far (placeholder shapes, no art yet):
 
@@ -16,6 +16,7 @@ Working so far (placeholder shapes, no art yet):
 - Flame Warden Heat gauge (top-left) and two skill buttons (bottom-right, or keys 1 and 2):
   - **Strike**: heavy hit on your target, builds Heat (needs the target in range)
   - **Ring**: burns all enemies around you, costs 40 Heat
+- A Hollow Throne room (the scene that opens when you press play): enemies chase you and hit back, a wave of 4 enemies, then the Throne Guardian boss. Clear both and the door opens; walk through it to win. You heal between waves, and the room restarts if you fall
 
 ## Running it
 
@@ -43,12 +44,17 @@ Working so far (placeholder shapes, no art yet):
 
 ```
 project.godot          Project settings (mobile renderer, touch emulation, pixel-art filtering)
-scenes/main.tscn       Test scene: player, 3 enemies, joystick
-scripts/player.gd      Movement and auto-attack (base for all classes)
+scenes/hollow_throne.tscn  The first dungeon room (main scene)
+scenes/enemy.tscn      Basic enemy
+scenes/boss.tscn       Throne Guardian boss (same script, bigger numbers)
+scenes/main.tscn       Sandbox: player and 3 enemies in an open space
+scripts/player.gd      Movement, HP and auto-attack (base for all classes)
 scripts/flame_warden.gd  Flame Warden: Heat gauge, Flame Strike, Ember Ring
 scripts/heat_bar.gd    Heat gauge display
 scripts/skill_button.gd  Round on-screen skill button with cooldown sweep
-scripts/enemy.gd       HP, damage flash, HP bar and target ring
+scripts/enemy.gd       HP, chasing and attacking, damage flash, HP bar and target ring
+scripts/wall.gd        Solid wall block, sized in the Inspector (visible in the editor)
+scripts/room_director.gd  Waves, boss, door, exit, messages and restart
 scripts/virtual_joystick.gd  Multitouch on-screen joystick
 scripts/main.gd        Tap-to-target, default movement keys and skill keys
 docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
@@ -59,7 +65,7 @@ docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 1. ~~Learn the basics~~
 2. ~~Movement and combat (joystick, tap-to-target, auto-attack)~~
 3. ~~Warrior skills and the Flame Warden's Heat gauge~~
-4. **One Hollow Throne dungeon room** (next)
+4. **One Hollow Throne dungeon room** (first version, testing)
 5. Layered sprites (base body plus one swappable armor piece)
 6. 2-player online co-op
 
@@ -68,6 +74,7 @@ docs/SETUP.md          How the scene is built, D-pad setup and tunable numbers
 - **Flame Warden**: a Warrior specialization built around heat and fire.
 - **Heat gauge**: the Flame Warden's class resource (0–100). Attacks build it, it cools after 3 seconds out of combat, and Ember Ring spends it.
 - **Hollow Throne**: a ruined dungeon from the fallen star empire, used for the first test room.
+- **Throne Guardian**: the boss at the end of the first Hollow Throne room.
 
 ## License
 

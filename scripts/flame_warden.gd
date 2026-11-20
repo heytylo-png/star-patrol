@@ -57,6 +57,8 @@ func use_skill(index: int) -> void:
 
 
 func can_use_skill(index: int) -> bool:
+	if is_dead:
+		return false
 	if index < 0 or index >= _cooldowns.size() or _cooldowns[index] > 0.0:
 		return false
 	match index:
@@ -109,6 +111,7 @@ func _set_ring_effect(value: float) -> void:
 
 
 func _draw() -> void:
+	super()  # HP bar.
 	if _ring_effect > 0.0:
 		var color := Color(1.0, 0.5, 0.1, 1.0 - _ring_effect)
 		draw_arc(Vector2.ZERO, ring_radius * _ring_effect, 0.0, TAU, 48, color, 4.0)

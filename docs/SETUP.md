@@ -62,7 +62,11 @@ texture, and set each one's **Action** property to one of those four names. No e
 | Player | Attack Range | 40 |
 | Player | Attack Damage | 10 |
 | Player | Attack Cooldown | 0.8 s |
-| Enemy | Max HP | 50 |
+| Player | Max HP | 100 |
+| Enemy | Max HP / Move Speed / Aggro Range | 50 / 60 / 150 px |
+| Enemy | Attack Range / Damage / Cooldown | 30 px / 4 / 1.5 s |
+| Boss (`boss.tscn`) | Max HP / Damage / Cooldown | 160 / 8 / 1.6 s |
+| RoomDirector | Heal Between Waves | on |
 | Joystick | Radius | 80 |
 | Main | Tap Radius | 32 |
 | Player (Flame Warden) | Max Heat | 100 |
@@ -78,3 +82,15 @@ The Player node now uses `flame_warden.gd`, which extends `player.gd`. Future cl
 pattern: extend `Player` and override `use_skill`, `can_use_skill` and `skill_cooldown_ratio`.
 The UI layer has a **HeatBar** (top-left) and two **SkillButton** nodes (bottom-right); each has a
 **Player** slot pointing at the Player node.
+
+## Step 4: Hollow Throne room
+
+`scenes/hollow_throne.tscn` is now the main scene (`main.tscn` is kept as a sandbox).
+
+- **Walls**: each wall is a `StaticBody2D` with `wall.gd`. Set **Size** and **Color** in the Inspector and
+  drag it into place; it draws itself in the editor.
+- **Waves**: under the **Waves** node, each child (`Wave1`, `Wave2`, ...) holds that wave's enemies.
+  Add an enemy by instancing `enemy.tscn` or `boss.tscn` into a wave. Waves run in order; the last one
+  is announced as the boss.
+- **RoomDirector**: links the Player, the Waves node, the **Door** (removed when every wave is cleared),
+  the **Exit** area beyond it, and the **Message** label.
